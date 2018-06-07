@@ -56,3 +56,39 @@ function has_mount() {
 			print $1;
 	}';
 }
+
+# $1: path
+function file_size() {
+	stat --printf="%s" "$1";
+}
+
+# $1: path
+function file_size_human_readable() {
+	# https://unix.stackexchange.com/questions/44040/a-standard-tool-to-convert-a-byte-count-into-human-kib-mib-etc-like-du-ls1
+	stat --printf="%s" "$1" | pipe_for_human_readable_size;
+}
+
+function pipe_for_human_readable_size() {
+	awk 'function human(x) {
+		if (x < 1000)
+			return x;
+		x /= 1024;
+		s = "kMGTEPZY";
+		while (x >= 1000 && length(s) > 1) {
+			x /= 1024;
+			s = substr(s,2);
+		}
+		return int(x+0.5) substr(s,1,1);
+	}
+	{
+		sub(/^[0-9]+/, human($1));
+		print;
+	}';
+}
+
+# $1: a
+# $2: b
+# return a*b
+function multiply() {
+	awk -v a="$1" -v b="$2" 'BEGIN { print a * b; exit; }';
+}

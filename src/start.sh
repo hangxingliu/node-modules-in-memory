@@ -42,6 +42,17 @@ NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
 HAS_MOUNT=`has_mount "$NODE_MODULES_FULL_PATH"`;
 [[ -n "$HAS_MOUNT" ]] && throw "\"$NODE_MODULES\" has mounted! ($HAS_MOUNT)";
 
+# adjust tmpfs size
+if [[ -f "$RESTORE_FILE" ]]; then
+	RESTORE_FILE_SIZE=`file_size "$RESTORE_FILE"`;
+	RESTORE_FILE_SIZE_R=`file_size_human_readable "$RESTORE_FILE"`;
+	if [[ "$RESTORE_FILE_SIZE" -gt "$SIZE" ]]; then
+		INC_TO_SIZE=`multiply "$RESTORE_FILE_SIZE" "1.25"`;
+		INC_TO_SIZE_R=`echo "$INC_TO_SIZE" | pipe_for_human_readable_size`;
+		echo "[WARN]: because size of \"$RESTORE_FILE\" is $RESTORE_FILE_SIZE_R, so mount size increase to $INC_TO_SIZE($INC_TO_SIZE_R)";
+		SIZE="$INC_TO_SIZE";
+	fi
+fi
 
 if [[ -e "$NODE_MODULES" ]]; then
 	[[ ! -d "$NODE_MODULES" ]] && throw "\"$NODE_MODULES\" is not a directory!";
