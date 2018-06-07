@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+_nmim_completion() {
+	local ACTIONS OPTS_COMMON OPTS_START;
+	ACTIONS="start stop save";
+
+	OPTS_COMMON="";
+	OPTS_START="${OPTS_COMMON} --size";
+
+	local PREV_WORD CURRENT_WORD;
+	CURRENT_WORD="${COMP_WORDS[COMP_CWORD]}";
+    PREV_WORD="${COMP_WORDS[COMP_CWORD-1]}";
+
+	if [[ "$COMP_CWORD" == "1" ]]; then
+        COMPREPLY=( $( compgen -W "$ACTIONS" -- $CURRENT_WORD ) );
+		return;
+	fi
+
+	local CURRENT_ACTION;
+	CURRENT_ACTION="${COMP_WORDS[1]}";
+	case "$CURRENT_ACTION" in
+		start)
+			# completion for list
+			if [[ "$CURRENT_WORD" == -* ]]; then
+				COMPREPLY=( $( compgen -W "$OPTS_START" -- $CURRENT_WORD ) );
+				return;
+			fi
+			# case "$PREV_WORD" in
+			# 	"-F") ;& "--format")
+			# 		COMPREPLY=( $( compgen -W "normal reverse" -- $CURRENT_WORD ) );;
+			# 	"--style")
+			# 		COMPREPLY=( $( compgen -W "${AVAILABLE_STYLE}" -- $CURRENT_WORD ) );;
+			# 	*) COMPREPLY=( $( compgen -A file -- $CURRENT_WORD ) );;
+			# esac
+		;;
+
+		# file completion in default
+		*) COMPREPLY=( $( compgen -A file -- $CURRENT_WORD ) );;
+	esac
+}
+
+complete -F _nmim_completion 'nmim';
+
