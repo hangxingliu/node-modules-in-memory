@@ -11,10 +11,13 @@ pushd "$__DIRNAME" > /dev/null;
 # ===============
 # include scripts
 source ./_utils.sh
+source ./_config.sh
 # ===============
 popd > /dev/null;
 
 function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
+
+config_cleanup_global_list;
 
 [[ ! -d "$NODE_MODULES" ]] && throw "\"$NODE_MODULES\" is not a directory!";
 

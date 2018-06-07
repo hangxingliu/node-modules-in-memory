@@ -12,11 +12,13 @@ pushd "$__DIRNAME" > /dev/null;
 # ===============
 # include scripts
 source ./_utils.sh
+source ./_config.sh
 # ===============
 popd > /dev/null;
 
-
 function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
+
+config_cleanup_global_list;
 
 RAW_SIZE="$DEFAULT_SIZE";
 
@@ -74,8 +76,10 @@ if [[ -f "$RESTORE_FILE" ]]; then
 		# --no-overwrite-dir: prevent error about no permission of '.'
 	popd >/dev/null                  || throw "could not \`popd\` from \"$NODE_MODULES\"";
 
-
+	config_append_global_list "$NODE_MODULES_FULL_PATH";
 	echo "success: restore \"$NODE_MODULES\" from \"$RESTORE_FILE\" into memory now!";
 else
+
+	config_append_global_list "$NODE_MODULES_FULL_PATH";
 	echo "success: \"$NODE_MODULES\" into memory now!";
 fi

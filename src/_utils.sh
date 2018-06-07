@@ -57,6 +57,16 @@ function has_mount() {
 	}';
 }
 
+_MOUNT_CACHE="";
+# $1: path
+function has_mount_with_cache() {
+	if [[ -z "$MOUNT_CACHE" ]]; then  _MOUNT_CACHE=`mount`; fi
+	echo "$_MOUNT_CACHE" | gawk -v test_dir="$1" '{
+		if(index($0, test_dir))
+			print $1;
+	}';
+}
+
 # $1: path
 function file_size() {
 	stat --printf="%s" "$1";

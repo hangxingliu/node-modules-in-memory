@@ -16,12 +16,16 @@ function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
 
 config_cleanup_global_list;
 
-[[ ! -d "$NODE_MODULES" ]] && throw "\"$NODE_MODULES\" is not a directory!";
+list=`config_get_global_list`;
+while read -r mount_path; do
+	if [[ -z "$mount_path" ]]; then continue; fi
 
-NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
+	echo "[.] ${mount_path}";
 
-sudo umount "$NODE_MODULES_FULL_PATH";
-[[ $? != 0 ]] && throw "sudo umount failed!";
+	sudo umount "$mount_path";
+	[[ $? != 0 ]] && throw "sudo umount failed!";
 
-config_cleanup_global_list;
-echo "success: umount \"$NODE_MODULES\" from memory!";
+	config_cleanup_global_list;
+	echo "success: umounted!";
+
+done <<< "$list"
