@@ -1,9 +1,36 @@
 #!/usr/bin/env bash
 
+# man test:
+# -t FD  file descriptor FD is opened on a terminal
+if [[ -t 1 ]]; then # test is terminal (0: stdin, stdout: 1, stderr: 2)
+	COLOR_MODE=`tput colors`; # 8, 256
+	if [[ -n "$COLOR_MODE" ]] && [[ "$COLOR_MODE" -ge 8 ]]; then
+		# using \x1b but not \e is used for gawk
+		BOLD="\x1b[1m";
+		DIM="\x1b[2m";
+		ITALIC="\x1b[3m";
+		UNDERLINE="\x1b[4m";
+		RESET="\x1b[0m";
+
+		RED="\x1b[31m";
+		GREEN="\x1b[32m";
+		YELLOW="\x1b[33m";
+		BLUE="\x1b[34m";
+		PURPLE="\x1b[35m";
+		CYAN="\x1b[36m";
+		GREY="\x1b[37m";
+
+		BG_WHITE="\x1b[107m\x1b[48;5;231m"; # it actual is dark grey # rgb8 and rgb256
+
+		# combine font styles:
+		STYLE_ERROR="${BOLD}${RED}";
+		STYLE_WARN="${BOLD}${YELLOW}";
+		STYLE_SUCCESS="${BOLD}${GREEN}";
+	fi
+fi
 
 # $1: size
 # size format is same with `dd`
-
 # > N and BYTES may be followed by the following multiplicative suffixes:  c  =1,  w
 # >       =2,  b  =512,  kB  =1000,  K  =1024,  MB  =1000*1000,  M  =1024*1024,  xM =M, GB
 # >       =1000*1000*1000, G =1024*1024*1024, and so on for T, P, E, Z, Y.
@@ -51,20 +78,14 @@ function parse_size_to_bytes() {
 
 # $1: path
 function has_mount() {
-	mount | gawk -v test_dir="$1" '{
-		if(index($0, test_dir))
-			print $1;
-	}';
+	mountpoint -q -- "$1";
+	return $?;
 }
 
-_MOUNT_CACHE="";
-# $1: path
-function has_mount_with_cache() {
-	if [[ -z "$MOUNT_CACHE" ]]; then  _MOUNT_CACHE=`mount`; fi
-	echo "$_MOUNT_CACHE" | gawk -v test_dir="$1" '{
-		if(index($0, test_dir))
-			print $1;
-	}';
+# $1: mount_point
+function get_mount_size() {
+	# -k: uses 1024-byte (1K) units instead of the default 512-byte units when reporting space information.
+	df -k --output=size "$1" | awk 'NR == 2 { print $1 * 1024; }'
 }
 
 # $1: path

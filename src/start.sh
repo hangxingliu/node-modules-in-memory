@@ -16,7 +16,7 @@ source ./_config.sh
 # ===============
 popd > /dev/null;
 
-function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
+function throw() { echo -e "${STYLE_ERROR}fatal: $1${RESET}" > /dev/stderr; exit 1; }
 
 config_cleanup_global_list;
 
@@ -41,8 +41,10 @@ SIZE=`parse_size_to_bytes "$RAW_SIZE"`;
 
 
 NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
-HAS_MOUNT=`has_mount "$NODE_MODULES_FULL_PATH"`;
-[[ -n "$HAS_MOUNT" ]] && throw "\"$NODE_MODULES\" has mounted! ($HAS_MOUNT)";
+if has_mount "$NODE_MODULES_FULL_PATH"; then
+	echo -e "${STYLE_WARN}warn: \"$NODE_MODULES\" has mounted!${RESET}";
+	exit 0;
+fi
 
 # adjust tmpfs size
 if [[ -f "$RESTORE_FILE" ]]; then
@@ -77,9 +79,9 @@ if [[ -f "$RESTORE_FILE" ]]; then
 	popd >/dev/null                  || throw "could not \`popd\` from \"$NODE_MODULES\"";
 
 	config_append_global_list "$NODE_MODULES_FULL_PATH";
-	echo "success: restore \"$NODE_MODULES\" from \"$RESTORE_FILE\" into memory now!";
+	echo -e "${STYLE_SUCCESS}success: restore \"$NODE_MODULES\" from \"$RESTORE_FILE\" into memory now!${RESET}";
 else
 
 	config_append_global_list "$NODE_MODULES_FULL_PATH";
-	echo "success: \"$NODE_MODULES\" into memory now!";
+	echo -e "${STYLE_SUCCESS}success: \"$NODE_MODULES\" into memory now!${RESET}";
 fi

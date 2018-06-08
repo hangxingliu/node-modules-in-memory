@@ -18,7 +18,7 @@ function config_cleanup_global_list() {
 	new_list="";
 	while read -r mount_path; do
 		if [[ -z "$mount_path" ]]; then continue; fi
-		if [[ -n `has_mount_with_cache "$mount_path"` ]]; then
+		if has_mount "$mount_path"; then
 			new_list="${new_list}${mount_path}\n";
 		fi
 	done <<< "$list"

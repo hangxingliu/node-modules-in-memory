@@ -7,10 +7,15 @@ function _usage() {
 	echo
 	echo "Actions:"
 	echo
-	echo "  start"
-	echo "  save"
-	echo "  stop"
-	echo "  stop-all"
+	echo "  start        mount node_modules into memory"
+	echo "  save         save content in node_modules to node_modules.tar"
+	echo "  stop         unmount node_modules from memory"
+	echo "  status       get current node_modules status"
+	echo "  stop-all     unmount all mounted node_modules directories"
+	echo "  status-all   get all mounted node_modules status and status of node_modules in current directory"
+	echo "  npm          mount node_modules into memory and execute npm command"
+	echo
+	echo "  help         (aliases: -h --help) print usage"
 	echo
 	exit 0
 }
@@ -24,14 +29,20 @@ SCRIPT="";
 [[ -z "$ACTION" ]] && _usage;
 
 case "$ACTION" in
-	start) SCRIPT="$SRC_DIR/start.sh" ;;
-	save) SCRIPT="$SRC_DIR/save.sh" ;;
-	stop) SCRIPT="$SRC_DIR/stop.sh" ;;
-	stop-all) SCRIPT="$SRC_DIR/stop-all.sh" ;;
+	npm)              SCRIPT="npm.sh" ;;
+	go|start)         SCRIPT="start.sh" ;;
+	save)             SCRIPT="save.sh" ;;
+	stop)             SCRIPT="stop.sh" ;;
+	stop-all)         SCRIPT="stop-all.sh" ;;
+	status)           SCRIPT="status.sh" ;;
+	status-all)       SCRIPT="status-all.sh" ;;
 
-	-h|--help) _usage ;;
+	-h|--help|help) _usage ;;
 
 	*)  throw "unknwon action: \"$ACTION\"" ;;
 esac
 
-bash "$SCRIPT" "${@:2}";
+if [[ -n "$SCRIPT" ]]; then
+	bash "$SRC_DIR/$SCRIPT" "${@:2}";
+	exit $?;
+fi

@@ -20,12 +20,10 @@ list=`config_get_global_list`;
 while read -r mount_path; do
 	if [[ -z "$mount_path" ]]; then continue; fi
 
-	echo "[.] ${mount_path}";
-
-	sudo umount "$mount_path";
-	[[ $? != 0 ]] && throw "sudo umount failed!";
-
-	config_cleanup_global_list;
-	echo "success: umounted!";
+	if has_mount "$mount_path"; then
+		MOUNT_SIZE=`get_mount_size "$mount_path" | pipe_for_human_readable_size`;
+		echo -e "${mount_path} ${GREEN}has mounted with size ${BOLD}${MOUNT_SIZE}${RESET}";
+	fi
 
 done <<< "$list"
+
