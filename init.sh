@@ -9,8 +9,9 @@
 
 _nmim_completion() {
 	local ACTIONS OPTS_COMMON OPTS_START;
-	ACTIONS="start stop save stop-all";
+	ACTIONS="start stop save stop-all status status-all npm";
 	OPTS_START="--size";
+	OPTS_STOP="-s --save";
 
 	local PREV_WORD CURRENT_WORD;
 	CURRENT_WORD="${COMP_WORDS[COMP_CWORD]}";
@@ -28,6 +29,12 @@ _nmim_completion() {
 		start)
 			if [[ "$CURRENT_WORD" == -* ]]; then
 				COMPREPLY=( $( compgen -W "$OPTS_START" -- $CURRENT_WORD ) );
+				return;
+			fi
+		;;
+		stop)
+			if [[ "$CURRENT_WORD" == -* ]]; then
+				COMPREPLY=( $( compgen -W "$OPTS_STOP" -- $CURRENT_WORD ) );
 				return;
 			fi
 			# case "$PREV_WORD" in
