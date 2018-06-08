@@ -9,7 +9,7 @@
 
 _nmim_completion() {
 	local ACTIONS OPTS_COMMON OPTS_START;
-	ACTIONS="start stop save stop-all status status-all npm";
+	ACTIONS="go start stop save stop-all all-stop status status-all all all-status npm";
 	OPTS_START="--size";
 	OPTS_STOP="-s --save";
 

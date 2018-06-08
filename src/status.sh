@@ -25,10 +25,11 @@ fi
 NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
 if has_mount "$NODE_MODULES_FULL_PATH"; then
 	MOUNT_SIZE=`get_mount_size "$NODE_MODULES_FULL_PATH" | pipe_for_human_readable_size`;
-	echo -e "node_modules:     ${GREEN}mounted (${BOLD}${MOUNT_SIZE}${RESET}${GREEN})${RESET}";
+	USED_SIZE=`get_mount_used_size "$NODE_MODULES_FULL_PATH" | pipe_for_human_readable_size`;
+	echo -e "node_modules:     ${GREEN}mounted (used: ${USED_SIZE} / all: ${MOUNT_SIZE})${RESET}";
 fi
 
 if [[ -f "$TARGET_FILE" ]]; then
 	FILE_SIZE_R=`file_size_human_readable "$TARGET_FILE"`;
-	echo -e "node_modules.tar: ${GREEN}${BOLD}${FILE_SIZE_R}${RESET}";
+	echo -e "node_modules.tar: ${GREEN}${FILE_SIZE_R}${RESET}";
 fi

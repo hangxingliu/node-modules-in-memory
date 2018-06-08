@@ -22,7 +22,8 @@ while read -r mount_path; do
 
 	if has_mount "$mount_path"; then
 		MOUNT_SIZE=`get_mount_size "$mount_path" | pipe_for_human_readable_size`;
-		echo -e "${mount_path} ${GREEN}has mounted with size ${BOLD}${MOUNT_SIZE}${RESET}";
+		USED_SIZE=`get_mount_used_size "$mount_path" | pipe_for_human_readable_size`;
+		echo -e "${mount_path} ${GREEN}has mounted (used: ${USED_SIZE} / all: ${MOUNT_SIZE})${RESET}";
 	fi
 
 done <<< "$list"

@@ -88,6 +88,12 @@ function get_mount_size() {
 	df -k --output=size "$1" | awk 'NR == 2 { print $1 * 1024; }'
 }
 
+# $1: mount_point
+function get_mount_used_size() {
+	# -k: uses 1024-byte (1K) units instead of the default 512-byte units when reporting space information.
+	df -k --output=used "$1" | awk 'NR == 2 { print $1 * 1024; }'
+}
+
 # $1: path
 function file_size() {
 	stat --printf="%s" "$1";

@@ -7,15 +7,18 @@ function _usage() {
 	echo
 	echo "Actions:"
 	echo
-	echo "  start        mount node_modules into memory"
+	echo "  start, go    mount node_modules into memory"
 	echo "  save         save content in node_modules to node_modules.tar"
 	echo "  stop         unmount node_modules from memory"
 	echo "  status       get current node_modules status"
-	echo "  stop-all     unmount all mounted node_modules directories"
-	echo "  status-all   get all mounted node_modules status and status of node_modules in current directory"
 	echo "  npm          mount node_modules into memory and execute npm command"
+	echo "  all-stop, stop-all"
+	echo "               unmount all mounted node_modules directories"
+	echo "  all, all-status, status-all"
+	echo "               get all mounted node_modules status and status of node_modules in current directory"
 	echo
-	echo "  help         (aliases: -h --help) print usage"
+	echo "  help, -h, --help"
+	echo "               print usage"
 	echo
 	exit 0
 }
@@ -33,9 +36,9 @@ case "$ACTION" in
 	go|start)         SCRIPT="start.sh" ;;
 	save)             SCRIPT="save.sh" ;;
 	stop)             SCRIPT="stop.sh" ;;
-	stop-all)         SCRIPT="stop-all.sh" ;;
+	all-stop|stop-all)         SCRIPT="stop-all.sh" ;;
 	status)           SCRIPT="status.sh" ;;
-	status-all)       SCRIPT="status-all.sh" ;;
+	all|all-status|status-all)       SCRIPT="status-all.sh" ;;
 
 	-h|--help|help) _usage ;;
 
