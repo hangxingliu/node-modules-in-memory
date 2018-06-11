@@ -17,6 +17,7 @@ function throw() { echo -e "${STYLE_ERROR}fatal: $1${RESET}" > /dev/stderr; exit
 config_cleanup_global_list;
 
 list=`config_get_global_list`;
+count="0";
 while read -r mount_path; do
 	if [[ -z "$mount_path" ]]; then continue; fi
 
@@ -24,7 +25,9 @@ while read -r mount_path; do
 		MOUNT_SIZE=`get_mount_size "$mount_path" | pipe_for_human_readable_size`;
 		USED_SIZE=`get_mount_used_size "$mount_path" | pipe_for_human_readable_size`;
 		echo -e "${mount_path} ${GREEN}has mounted (used: ${USED_SIZE} / all: ${MOUNT_SIZE})${RESET}";
+		count=$((count+1));
 	fi
 
 done <<< "$list"
 
+echo -e "[total] ${BOLD}${count}${RESET} node_modules in memroy";
