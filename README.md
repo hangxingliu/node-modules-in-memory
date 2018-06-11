@@ -53,7 +53,8 @@ nmim stop-all # stop all mounted node_modules
 - [ ] Support MacOS
 	- Reference (tmpfs for OS X): <https://gist.github.com/Roman2K/3238fb441e298369198e>
 	- Test `mount`, `mountpoint` and more ...
-- [ ] add `check.sh` for checking dependencies
+- [x] add `check.sh` for checking dependencies
+- [ ] add more comments
 - [ ] auto growing size (it may be difficult)
 
 
