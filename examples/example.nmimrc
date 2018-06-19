@@ -1,0 +1,6 @@
+#!/usr/env/bin bash
+
+# All config name is starts with NMIM_
+
+# Perferred mount size
+NMIM_PREFERRED_SIZE="500m";

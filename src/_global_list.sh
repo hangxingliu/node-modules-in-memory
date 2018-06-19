@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 
-_CONFIG_DIR="$HOME/.config/node-modules-in-memory";
-_GLOBAL_LIST="$_CONFIG_DIR/global.list";
-
-function _global_list_throw() { echo "fatal: $1" > /dev/stderr; exit 1; }
-
-if [[ ! -e "$_CONFIG_DIR" ]]; then
-	mkdir -p "$_CONFIG_DIR" || _global_list_throw "could not create config directory: \"$_CONFIG_DIR\"";
-fi
-[[ -d "$_CONFIG_DIR" ]] || _global_list_throw "\"$_CONFIG_DIR\" is not a directory!";
+_GLOBAL_LIST="$HOME/.config/node-modules-in-memory/global.list";
 
 function global_list_cleanup() {
 	if [[ ! -f "$_GLOBAL_LIST" ]]; then return; fi

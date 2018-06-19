@@ -11,7 +11,9 @@ __DIRNAME=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`;
 pushd "$__DIRNAME" > /dev/null;
 # ===============
 # include scripts
+source ./_dirs.sh
 source ./_utils.sh
+source ./_nmimrc.sh
 source ./_global_list.sh
 # ===============
 popd > /dev/null;
@@ -22,6 +24,13 @@ global_list_cleanup;
 
 RAW_SIZE="$DEFAULT_SIZE";
 
+# =====================================
+#    Setup .nmimrc and global config
+nmimrc_setup;
+if [[ -n "$NMIM_PREFERRED_SIZE" ]]; then RAW_SIZE="$NMIM_PREFERRED_SIZE"; fi
+
+# ==========================
+#   Command Line Arguments
 ARG_NAME="";
 for argument in "$@"; do
 	if [[ -n "$ARG_NAME" ]]; then
@@ -39,6 +48,7 @@ done
 SIZE=`parse_size_to_bytes "$RAW_SIZE"`;
 [[ -z "$SIZE" ]] && throw "invalid --size \"$RAW_SIZE\" !";
 
+SIZE_PRINTABLE=`echo "$SIZE" | pipe_for_human_readable_size`;
 
 NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
 if has_mount "$NODE_MODULES_FULL_PATH"; then
@@ -78,10 +88,10 @@ if [[ -f "$RESTORE_FILE" ]]; then
 		# --no-overwrite-dir: prevent error about no permission of '.'
 	popd >/dev/null                  || throw "could not \`popd\` from \"$NODE_MODULES\"";
 
-	global_list_append "$NODE_MODULES_FULL_PATH";
-	echo -e "${STYLE_SUCCESS}success: restore \"$NODE_MODULES\" from \"$RESTORE_FILE\" into memory now!${RESET}";
+	_SUCCESS_OUTPUT="restore \"$NODE_MODULES\" from \"$RESTORE_FILE\" into memory now!";
 else
 
-	global_list_append "$NODE_MODULES_FULL_PATH";
-	echo -e "${STYLE_SUCCESS}success: \"$NODE_MODULES\" into memory now!${RESET}";
+	_SUCCESS_OUTPUT="\"$NODE_MODULES\" into memory now!";
 fi
+global_list_append "$NODE_MODULES_FULL_PATH";
+echo -e "${STYLE_SUCCESS}success: ${_SUCCESS_OUTPUT} (size: $SIZE_PRINTABLE)${RESET}";

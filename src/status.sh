@@ -7,6 +7,7 @@ __DIRNAME=`cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd`;
 pushd "$__DIRNAME" > /dev/null;
 # ===============
 # include scripts
+source ./_dirs.sh
 source ./_utils.sh
 source ./_global_list.sh
 # ===============
