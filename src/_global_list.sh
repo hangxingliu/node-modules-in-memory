@@ -3,14 +3,14 @@
 _CONFIG_DIR="$HOME/.config/node-modules-in-memory";
 _GLOBAL_LIST="$_CONFIG_DIR/global.list";
 
-function config_throw() { echo "fatal: $1" > /dev/stderr; exit 1; }
+function _global_list_throw() { echo "fatal: $1" > /dev/stderr; exit 1; }
 
 if [[ ! -e "$_CONFIG_DIR" ]]; then
-	mkdir -p "$_CONFIG_DIR" || config_throw "could not create config directory: \"$_CONFIG_DIR\"";
+	mkdir -p "$_CONFIG_DIR" || _global_list_throw "could not create config directory: \"$_CONFIG_DIR\"";
 fi
-[[ -d "$_CONFIG_DIR" ]] || config_throw "\"$_CONFIG_DIR\" is not a directory!";
+[[ -d "$_CONFIG_DIR" ]] || _global_list_throw "\"$_CONFIG_DIR\" is not a directory!";
 
-function config_cleanup_global_list() {
+function global_list_cleanup() {
 	if [[ ! -f "$_GLOBAL_LIST" ]]; then return; fi
 
 	local list new_list mount_path;
@@ -26,7 +26,7 @@ function config_cleanup_global_list() {
 }
 
 # $1: node_modules path
-function config_append_global_list() {
+function global_list_append() {
 	local old_list;
 
 	if [[ -f "$_GLOBAL_LIST" ]]; then
@@ -36,7 +36,7 @@ function config_append_global_list() {
 	echo -e "$old_list\n$1" | gawk '!/^$/' | sort | uniq > "$_GLOBAL_LIST";
 }
 
-function config_get_global_list() {
+function global_list_get() {
 	if [[ ! -f "$_GLOBAL_LIST" ]]; then return; fi
 	cat "$_GLOBAL_LIST";
 }

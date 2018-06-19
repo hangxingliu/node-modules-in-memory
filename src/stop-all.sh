@@ -7,16 +7,16 @@ pushd "$__DIRNAME" > /dev/null;
 # ===============
 # include scripts
 source ./_utils.sh
-source ./_config.sh
+source ./_global_list.sh
 # ===============
 popd > /dev/null;
 
 
 function throw() { echo -e "${STYLE_ERROR}fatal: $1${RESET}" > /dev/stderr; exit 1; }
 
-config_cleanup_global_list;
+global_list_cleanup;
 
-list=`config_get_global_list`;
+list=`global_list_get`;
 while read -r mount_path; do
 	if [[ -z "$mount_path" ]]; then continue; fi
 
@@ -25,7 +25,7 @@ while read -r mount_path; do
 	sudo umount "$mount_path";
 	[[ $? != 0 ]] && throw "sudo umount failed!";
 
-	config_cleanup_global_list;
+	global_list_cleanup;
 	echo "success: umounted!";
 
 done <<< "$list"
