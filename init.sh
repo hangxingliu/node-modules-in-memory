@@ -26,7 +26,7 @@ _nmim_completion() {
 	local CURRENT_ACTION;
 	CURRENT_ACTION="${COMP_WORDS[1]}";
 	case "$CURRENT_ACTION" in
-		start)
+		start|go)
 			if [[ "$CURRENT_WORD" == -* ]]; then
 				COMPREPLY=( $( compgen -W "$OPTS_START" -- $CURRENT_WORD ) );
 				return;

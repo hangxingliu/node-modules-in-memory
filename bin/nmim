@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
+VERSION="1.0.0";
+VERSION_DATE="2018-06-20";
+
 function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
+function _version() {
+	echo "nmim $VERSION ($VERSION_DATE)"
+	exit 0
+}
 function _usage() {
 	echo
 	echo "Usage: nmim <\$action> [...options]"
@@ -19,6 +26,8 @@ function _usage() {
 	echo
 	echo "  help, -h, --help"
 	echo "               print usage"
+	echo "  version, -v, --version"
+	echo "               print version information ($VERSION $VERSION_DATE)"
 	echo
 	exit 0
 }
@@ -36,11 +45,12 @@ case "$ACTION" in
 	go|start)         SCRIPT="start.sh" ;;
 	save)             SCRIPT="save.sh" ;;
 	stop)             SCRIPT="stop.sh" ;;
-	all-stop|stop-all)         SCRIPT="stop-all.sh" ;;
-	status)           SCRIPT="status.sh" ;;
+	all-stop|stop-all)               SCRIPT="stop-all.sh" ;;
+	status)                          SCRIPT="status.sh" ;;
 	all|all-status|status-all)       SCRIPT="status-all.sh" ;;
 
 	-h|--help|help) _usage ;;
+	-v|--version|version) _version ;;
 
 	*)  throw "unknwon action: \"$ACTION\"" ;;
 esac

@@ -34,4 +34,5 @@ pushd "$NODE_MODULES" >/dev/null   || throw "could not \`pushd\` into \"$NODE_MO
 tar -cf "../$TARGET_FILE" "."      || throw "save \"$NODE_MODULES\" to \"$TARGET_FILE\" failed!";
 popd >/dev/null                    || throw "could not \`popd\` from \"$NODE_MODULES\"";
 
-echo "success: saved \"$NODE_MODULES\" to \"$TARGET_FILE\"!";
+RESTORE_FILE_SIZE_R=`file_size_human_readable "$TARGET_FILE"`;
+echo "success: saved \"$NODE_MODULES\" to \"$TARGET_FILE\"! (size: $RESTORE_FILE_SIZE_R)";
