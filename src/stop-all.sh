@@ -18,6 +18,7 @@ function throw() { echo -e "${STYLE_ERROR}fatal: $1${RESET}" > /dev/stderr; exit
 global_list_cleanup;
 
 list=`global_list_get`;
+count="0";
 while read -r mount_path; do
 	if [[ -z "$mount_path" ]]; then continue; fi
 
@@ -29,4 +30,8 @@ while read -r mount_path; do
 	global_list_cleanup;
 	echo "success: umounted!";
 
+	count=$((count+1));
+
 done <<< "$list"
+
+echo -e "[total] unmount ${BOLD}${count}${RESET} node_modules from memroy";

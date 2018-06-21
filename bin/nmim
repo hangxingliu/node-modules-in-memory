@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-VERSION="1.0.0";
-VERSION_DATE="2018-06-20";
+VERSION="1.1.0";
+VERSION_DATE="2018-06-21";
 
 function throw() { echo -e "fatal: $1" > /dev/stderr; exit 1; }
 function _version() {
@@ -19,7 +19,7 @@ function _usage() {
 	echo "  stop         unmount node_modules from memory"
 	echo "  status       get current node_modules status"
 	echo "  npm          mount node_modules into memory and execute npm command"
-	echo "  all-stop, stop-all"
+	echo "  all-stop, stop-all, stop all"
 	echo "               unmount all mounted node_modules directories"
 	echo "  all, all-status, status-all"
 	echo "               get all mounted node_modules status and status of node_modules in current directory"

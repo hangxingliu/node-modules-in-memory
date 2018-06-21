@@ -20,31 +20,54 @@ function throw() { echo -e "${STYLE_ERROR}fatal: $1${RESET}" > /dev/stderr; exit
 
 global_list_cleanup;
 
-NEED_SAVE="false"
+# $1: path
+# $2: --save
+function unmount_node_modules() {
+	pushd "$1" >/dev/null || throw "\"$1\" is not a directory!";
+	[[ ! -d "$NODE_MODULES" ]] && throw "\"$NODE_MODULES\" is not a directory!";
 
+	NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
+
+	if [[ "$2" == "--save" ]]; then
+		bash "$__DIRNAME/save.sh" || exit 1;
+	fi
+
+	if ! has_mount "$NODE_MODULES_FULL_PATH"; then
+		echo -e "${STYLE_WARN}warn: \"$NODE_MODULES\" has not mounted!${RESET}";
+		exit 0;
+	fi
+
+	sudo umount "$NODE_MODULES_FULL_PATH";
+	[[ $? != 0 ]] && throw "sudo umount failed!";
+
+	global_list_cleanup;
+	popd >/dev/null;
+	echo "success: umount \"$NODE_MODULES_FULL_PATH\" from memory!";
+}
+
+NEED_SAVE=""
+SPECIAL_PATH="false"
 for argument in "$@"; do
 	case "$argument" in
-		-s|--save) NEED_SAVE="true" ;;
+		-s|--save) NEED_SAVE="--save" ;;
+		-a|--all|all)
+			bash "$__DIRNAME/stop-all.sh";
+			exit $?;
+		;;
 
-		*)  throw "unknown option: \"$argument\" " ;;
+		-*)  throw "unknown option: \"$argument\" " ;;
+		*) SPECIAL_PATH="true" ;;
 	esac
 done
 
-[[ ! -d "$NODE_MODULES" ]] && throw "\"$NODE_MODULES\" is not a directory!";
-
-NODE_MODULES_FULL_PATH="$(pwd)/$NODE_MODULES";
-
-if [[ "$NEED_SAVE" == "true" ]]; then
-	bash "$__DIRNAME/save.sh" || exit 1;
+if [[ "$SPECIAL_PATH" == "false" ]]; then
+	unmount_node_modules "." "$NEED_SAVE";
+	exit $?;
 fi
 
-if ! has_mount "$NODE_MODULES_FULL_PATH"; then
-	echo -e "${STYLE_WARN}warn: \"$NODE_MODULES\" has not mounted!${RESET}";
-	exit 0;
-fi
-
-sudo umount "$NODE_MODULES_FULL_PATH";
-[[ $? != 0 ]] && throw "sudo umount failed!";
-
-global_list_cleanup;
-echo "success: umount \"$NODE_MODULES\" from memory!";
+for argument in "$@"; do
+	case "$argument" in
+		-*|all) ;;
+		*) unmount_node_modules "$argument" "$NEED_SAVE";;
+	esac
+done
