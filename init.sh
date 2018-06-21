@@ -11,7 +11,7 @@ _nmim_completion() {
 	local ACTIONS OPTS_COMMON OPTS_START;
 	ACTIONS="go start stop save stop-all all-stop status status-all all all-status npm";
 	OPTS_START="--size";
-	OPTS_STOP="-s --save";
+	OPTS_STOP="-s --save -a --all";
 
 	local PREV_WORD CURRENT_WORD;
 	CURRENT_WORD="${COMP_WORDS[COMP_CWORD]}";
@@ -37,11 +37,7 @@ _nmim_completion() {
 				COMPREPLY=( $( compgen -W "$OPTS_STOP" -- $CURRENT_WORD ) );
 				return;
 			fi
-			# case "$PREV_WORD" in
-			# 	"-F") ;& "--format")
-			# 		COMPREPLY=( $( compgen -W "normal reverse" -- $CURRENT_WORD ) );;
-			# 	*) COMPREPLY=( $( compgen -A file -- $CURRENT_WORD ) );;
-			# esac
+			COMPREPLY=( $( compgen -A directory -W "all" -- $CURRENT_WORD ) );
 		;;
 
 		# file completion in default
